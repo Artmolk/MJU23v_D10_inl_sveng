@@ -38,6 +38,17 @@ namespace MJU23v_D10_inl_sveng
             }
         }
 
+        static int FindGlossIndex(string swedishWord, string englishWord)
+        {
+            for (int i = 0; i < dictionary.Count; i++)
+            {
+                SweEngGloss gloss = dictionary[i];
+                if (gloss.SwedishWord == swedishWord && gloss.EnglishWord == englishWord)
+                    return i;
+            }
+            return -1;
+        }
+
         static void Main(string[] args)
         {
             string defaultFile = "..\\..\\..\\dict\\sweeng.lis";
@@ -55,13 +66,13 @@ namespace MJU23v_D10_inl_sveng
                 else if (command == "hjälp")
                 {
                     Console.WriteLine("Tillgängliga kommandon:");
-                    Console.WriteLine("load [filnamn]");
-                    Console.WriteLine("list - Visar hela ordlistan.");
-                    Console.WriteLine("new [svenskt ord] [engelskt ord]");
-                    Console.WriteLine("delete [svenskt ord] [engelskt ord]");
-                    Console.WriteLine("translate [ord]");
+                    Console.WriteLine("Ladda [filnamn]");
+                    Console.WriteLine("Lista - Visar hela ordlistan.");
+                    Console.WriteLine("Ny [svenskt ord] [engelskt ord]");
+                    Console.WriteLine("Radera [svenskt ord] [engelskt ord]");
+                    Console.WriteLine("Översätt [ord]");
                     Console.WriteLine("hjälp");
-                    Console.WriteLine("quit");
+                    Console.WriteLine("Avsluta");
                 }
                 else if (command == "load")
                 {
@@ -77,86 +88,68 @@ namespace MJU23v_D10_inl_sveng
                 }
                 else if (command == "new")
                 {
+                    string swedishWord, englishWord;
                     if (arguments.Length == 3)
                     {
-                        dictionary.Add(new SweEngGloss(arguments[1], arguments[2]));
+                        swedishWord = arguments[1];
+                        englishWord = arguments[2];
                     }
-                    else if (arguments.Length == 1)
+                    else  //  1: (arguments.Length == 1)
                     {
                         Console.WriteLine("Write word in Swedish: ");
-                        string s = Console.ReadLine();
+                        swedishWord = Console.ReadLine();
                         Console.Write("Write word in English: ");
-                        string e = Console.ReadLine();
-                        dictionary.Add(new SweEngGloss(s, e));
+                        englishWord = Console.ReadLine();
                     }
+                    dictionary.Add(new SweEngGloss(swedishWord, englishWord));
                 }
                 else if (command == "delete")
                 {
+                    string swedishWord, englishWord;
                     if (arguments.Length == 3)
                     {
-                        int index = -1;
-                        for (int i = 0; i < dictionary.Count; i++)
-                        {
-                            SweEngGloss gloss = dictionary[i];
-                            if (gloss.SwedishWord == arguments[1] && gloss.EnglishWord == arguments[2])
-                                index = i;
-                        }
-                        if (index >= 0)
-                        {
-                            dictionary.RemoveAt(index);
-                        }
+                        swedishWord = arguments[1];
+                        englishWord = arguments[2];
                     }
-                    else if (arguments.Length == 1)
+                    else // 2. (arguments.Length == 1)
                     {
                         Console.WriteLine("Write word in Swedish: ");
-
-                        string s = Console.ReadLine();
+                        swedishWord = Console.ReadLine();
                         Console.Write("Write word in English: ");
-                        string e = Console.ReadLine();
-                        int index = -1;
-                        for (int i = 0; i < dictionary.Count; i++)
-                        {
-                            SweEngGloss gloss = dictionary[i];
-                            if (gloss.SwedishWord == s && gloss.EnglishWord == e)
-                                index = i;
-                        }
-                        if (index >= 0)
-                        {
-                            dictionary.RemoveAt(index);
-                        }
+                        englishWord = Console.ReadLine();
+                    }
+                    int index = FindGlossIndex(swedishWord, englishWord);
+                    if (index >= 0)
+                    {
+                        dictionary.RemoveAt(index);
                     }
                 }
                 else if (command == "translate")
                 {
+                    string wordToTranslate;
                     if (arguments.Length == 2)
                     {
-                        foreach (SweEngGloss gloss in dictionary)
-                        {
-                            if (gloss.SwedishWord == arguments[1])
-                                Console.WriteLine($"English for {gloss.SwedishWord} is {gloss.EnglishWord}");
-                            if (gloss.EnglishWord == arguments[1])
-                                Console.WriteLine($"Swedish for {gloss.EnglishWord} is {gloss.SwedishWord}");
-                        }
+                        wordToTranslate = arguments[1];
                     }
-                    else if (arguments.Length == 1)
+                    else
                     {
                         Console.WriteLine("Write word to be translated: ");
-                        string s = Console.ReadLine();
-                        foreach (SweEngGloss gloss in dictionary)
-                        {
-                            if (gloss.SwedishWord == s)
-                                Console.WriteLine($"English for {gloss.SwedishWord} is {gloss.EnglishWord}");
-                            if (gloss.EnglishWord == s)
-                                Console.WriteLine($"Swedish for {gloss.EnglishWord} is {gloss.SwedishWord}");
-                        }
+                        wordToTranslate = Console.ReadLine();
+                    }
+                    foreach (SweEngGloss gloss in dictionary)
+                    {
+                        if (gloss.SwedishWord == wordToTranslate)
+                            Console.WriteLine($"English for {gloss.SwedishWord} is {gloss.EnglishWord}");
+                        if (gloss.EnglishWord == wordToTranslate)
+                            Console.WriteLine($"Swedish for {gloss.EnglishWord} is {gloss.SwedishWord}");
                     }
                 }
                 else
                 {
                     Console.WriteLine($"Unknown command: '{command}'");
                 }
-            }
-            while (true);
+            } while (true);
         }
     }
 }
+
