@@ -29,6 +29,18 @@
                 {
                     Console.WriteLine("Goodbye!");
                 }
+                else if (command == "hjälp")
+                {
+                    Console.WriteLine("Tillgängliga kommandon:");
+                    Console.WriteLine("load [filnamn]");
+                    Console.WriteLine("list - Visar hela ordlistan.");
+                    Console.WriteLine("new [svenskt ord] [engelskt ord]");
+                    Console.WriteLine("delete [svenskt ord] [engelskt ord]");
+                    Console.WriteLine("translate [ord]");
+                    Console.WriteLine("hjälp");
+                    Console.WriteLine("quit");
+                }
+
                 else if (command == "load")
                 {
                     if(argument.Length == 2)
