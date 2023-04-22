@@ -22,19 +22,27 @@ namespace MJU23v_D10_inl_sveng
                 EnglishWord = words[1];
             }
         }
+        static string defaultFile = "default.txt";
 
         static void LoadDictionary(string fileName)
         {
-            using (StreamReader reader = new StreamReader(fileName))
+            try
             {
-                dictionary = new List<SweEngGloss>();
-                string line = reader.ReadLine();
-                while (line != null)
+                using (StreamReader reader = new StreamReader(fileName))
                 {
-                    SweEngGloss gloss = new SweEngGloss(line);
-                    dictionary.Add(gloss);
-                    line = reader.ReadLine();
+                    dictionary = new List<SweEngGloss>();
+                    string line = reader.ReadLine();
+                    while (line != null)
+                    {
+                        SweEngGloss gloss = new SweEngGloss(line);
+                        dictionary.Add(gloss);
+                        line = reader.ReadLine();
+                    }
                 }
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine($"Kunde inte hitta filen: {fileName}");
             }
         }
 
@@ -49,30 +57,28 @@ namespace MJU23v_D10_inl_sveng
             return -1;
         }
 
-        static void Main(string[] args)
+        static bool Run(TextReader input, TextWriter output, string defaultFile)
         {
-            string defaultFile = "..\\..\\..\\dict\\sweeng.lis";
-            Console.WriteLine("Welcome to the dictionary app!");
             do
             {
-                Console.Write("> ");
-                string[] arguments = Console.ReadLine().Split();
+                output.Write("> ");
+                string[] arguments = input.ReadLine().Split();
                 string command = arguments[0];
                 if (command == "quit")
                 {
-                    Console.WriteLine("Goodbye!");
-                    break;
+                    output.WriteLine("Hejdå!");
+                    return true;
                 }
                 else if (command == "hjälp")
                 {
-                    Console.WriteLine("Tillgängliga kommandon:");
-                    Console.WriteLine("Ladda [filnamn]");
-                    Console.WriteLine("Lista - Visar hela ordlistan.");
-                    Console.WriteLine("Ny [svenskt ord] [engelskt ord]");
-                    Console.WriteLine("Radera [svenskt ord] [engelskt ord]");
-                    Console.WriteLine("Översätt [ord]");
-                    Console.WriteLine("hjälp");
-                    Console.WriteLine("Avsluta");
+                    output.WriteLine("Tillgängliga kommandon:");
+                    output.WriteLine("Ladda [filnamn]");
+                    output.WriteLine("Lista - Visar hela ordlistan.");
+                    output.WriteLine("Ny [svenskt ord] [engelskt ord]");
+                    output.WriteLine("Radera [svenskt ord] [engelskt ord]");
+                    output.WriteLine("Översätt [ord]");
+                    output.WriteLine("hjälp");
+                    output.WriteLine("Avsluta");
                 }
                 else if (command == "load")
                 {
@@ -83,73 +89,92 @@ namespace MJU23v_D10_inl_sveng
                 {
                     foreach (SweEngGloss gloss in dictionary)
                     {
-                        Console.WriteLine($"{gloss.SwedishWord,-10}  - {gloss.EnglishWord,-10}");
-                    }
-                }
-                else if (command == "new")
-                {
-                    string swedishWord, englishWord;
-                    if (arguments.Length == 3)
-                    {
-                        swedishWord = arguments[1];
-                        englishWord = arguments[2];
-                    }
-                    else  //  1: (arguments.Length == 1)
-                    {
-                        Console.WriteLine("Write word in Swedish: ");
-                        swedishWord = Console.ReadLine();
-                        Console.Write("Write word in English: ");
-                        englishWord = Console.ReadLine();
-                    }
-                    dictionary.Add(new SweEngGloss(swedishWord, englishWord));
-                }
-                else if (command == "delete")
-                {
-                    string swedishWord, englishWord;
-                    if (arguments.Length == 3)
-                    {
-                        swedishWord = arguments[1];
-                        englishWord = arguments[2];
-                    }
-                    else // 2. (arguments.Length == 1)
-                    {
-                        Console.WriteLine("Write word in Swedish: ");
-                        swedishWord = Console.ReadLine();
-                        Console.Write("Write word in English: ");
-                        englishWord = Console.ReadLine();
-                    }
-                    int index = FindGlossIndex(swedishWord, englishWord);
-                    if (index >= 0)
-                    {
-                        dictionary.RemoveAt(index);
-                    }
-                }
-                else if (command == "translate")
-                {
-                    string wordToTranslate;
-                    if (arguments.Length == 2)
-                    {
-                        wordToTranslate = arguments[1];
-                    }
-                    else
-                    {
-                        Console.WriteLine("Write word to be translated: ");
-                        wordToTranslate = Console.ReadLine();
-                    }
-                    foreach (SweEngGloss gloss in dictionary)
-                    {
-                        if (gloss.SwedishWord == wordToTranslate)
-                            Console.WriteLine($"English for {gloss.SwedishWord} is {gloss.EnglishWord}");
-                        if (gloss.EnglishWord == wordToTranslate)
-                            Console.WriteLine($"Swedish for {gloss.EnglishWord} is {gloss.SwedishWord}");
+                        output.WriteLine($"{gloss.SwedishWord,-10}  - {gloss.EnglishWord,-10}");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"Unknown command: '{command}'");
+                    output.WriteLine($"Okänt kommando: '{command}'");
                 }
             } while (true);
         }
+
+        static void Main(string[] args)
+        {
+            string defaultFile = "computing.lis";
+            dictionary = new List<SweEngGloss>(); // Initiera dictionary här
+            RunTests(defaultFile);
+
+            while (!Run(Console.In, Console.Out, defaultFile))
+            {
+            }
+        }
+
+        static void RunTests(string defaultFile)
+        {
+            // Test 1
+            using (var input = new StringReader("list\nquit\n"))
+            using (var output = new StringWriter())
+            {
+                Run(input, output, defaultFile);
+                string result = output.ToString();
+                if (result.Contains("Welcome") && !result.Contains("-"))
+                {
+                    Console.WriteLine("Test 1: GODKÄND");
+                }
+                else
+                {
+                    Console.WriteLine("Test 1: MISSLYCKAD");
+                }
+            }
+
+            // Test 2
+            using (var input = new StringReader("load\nlist\nquit\n"))
+            using (var output = new StringWriter())
+            {
+                Run(input, output, defaultFile);
+                string result = output.ToString();
+                if (result.Contains("Welcome") && result.Contains("-"))
+                {
+                    Console.WriteLine("Test 2: GODKÄND");
+                }
+                else
+                {
+                    Console.WriteLine("Test 2: MISSLYCKAD");
+                }
+            }
+
+            // Test 3
+            using (var input = new StringReader("load computing.lis\nlist\nquit\n"))
+            using (var output = new StringWriter())
+            {
+                Run(input, output, defaultFile);
+                string result = output.ToString();
+                if (result.Contains("Welcome") && result.Contains("-"))
+                {
+                    Console.WriteLine("Test 3: GODKÄND");
+                }
+                else
+                {
+                    Console.WriteLine("Test 3: MISSLYCKAD");
+                }
+            }
+
+            // Test 4
+            using (var input = new StringReader("load finns.ej\nlist\nquit\n"))
+            using (var output = new StringWriter())
+            {
+                Run(input, output, defaultFile);
+                string result = output.ToString();
+                if (result.Contains("Welcome") && result.Contains("Kunde inte hitta filen"))
+                {
+                    Console.WriteLine("Test 4: GODKÄND");
+                }
+                else
+                {
+                    Console.WriteLine("Test 4: MISSLYCKAD");
+                }
+            }
+        }
     }
 }
-
