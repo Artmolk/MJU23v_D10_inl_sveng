@@ -256,7 +256,7 @@ namespace MJU23v_D10_inl_sveng
                     }
                     else
                     {
-                        Console.WriteLine("Test 8: MISSLYCKAD");
+                        Console.WriteLine("Test 8: MISSLYCKAD"); //Även test 4-8 tillagd, glömde committa
                     }
                 }
             }
