@@ -23,7 +23,6 @@ namespace MJU23v_D10_inl_sveng
             }
         }
         static string defaultFile = "default.txt";
-
         static void LoadDictionary(string fileName)
         {
             try
@@ -59,6 +58,8 @@ namespace MJU23v_D10_inl_sveng
 
         static bool Run(TextReader input, TextWriter output, string defaultFile)
         {
+            output.WriteLine("Welcome");
+
             do
             {
                 output.Write("> ");
@@ -83,7 +84,8 @@ namespace MJU23v_D10_inl_sveng
                 else if (command == "load")
                 {
                     string fileName = arguments.Length == 2 ? arguments[1] : defaultFile;
-                    LoadDictionary(fileName);
+                    LoadDictionary(@"C:\Users\A.T\Desktop\Mölk\Sveng\MJU23v_D10_inl_sveng\dict\computing.lis");
+
                 }
                 else if (command == "list")
                 {
@@ -102,77 +104,160 @@ namespace MJU23v_D10_inl_sveng
         static void Main(string[] args)
         {
             string defaultFile = "computing.lis";
-            dictionary = new List<SweEngGloss>(); // Initiera dictionary här
+            dictionary = new List<SweEngGloss>(); // dictionary här
             RunTests(defaultFile);
 
             while (!Run(Console.In, Console.Out, defaultFile))
             {
-            }
-        }
 
-        static void RunTests(string defaultFile)
-        {
-            // Test 1
-            using (var input = new StringReader("list\nquit\n"))
-            using (var output = new StringWriter())
-            {
-                Run(input, output, defaultFile);
-                string result = output.ToString();
-                if (result.Contains("Welcome") && !result.Contains("-"))
-                {
-                    Console.WriteLine("Test 1: GODKÄND");
-                }
-                else
-                {
-                    Console.WriteLine("Test 1: MISSLYCKAD");
-                }
+
             }
 
-            // Test 2
-            using (var input = new StringReader("load\nlist\nquit\n"))
-            using (var output = new StringWriter())
+            static void RunTests(string defaultFile)
             {
-                Run(input, output, defaultFile);
-                string result = output.ToString();
-                if (result.Contains("Welcome") && result.Contains("-"))
+                // Test 1
+                using (var input = new StringReader("list\nquit\n"))
+                using (var output = new StringWriter())
                 {
-                    Console.WriteLine("Test 2: GODKÄND");
-                }
-                else
-                {
-                    Console.WriteLine("Test 2: MISSLYCKAD");
-                }
-            }
+                    Run(input, output, defaultFile);
+                    string result = output.ToString();
+                    Console.WriteLine($"Resultat för test 1: {result}");
 
-            // Test 3
-            using (var input = new StringReader("load computing.lis\nlist\nquit\n"))
-            using (var output = new StringWriter())
-            {
-                Run(input, output, defaultFile);
-                string result = output.ToString();
-                if (result.Contains("Welcome") && result.Contains("-"))
-                {
-                    Console.WriteLine("Test 3: GODKÄND");
+                    if (result.Contains("Welcome") && !result.Contains("-"))
+                    {
+                        Console.WriteLine("Test 1: GODKÄND");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Test 1: MISSLYCKAD");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Test 3: MISSLYCKAD");
-                }
-            }
 
-            // Test 4
-            using (var input = new StringReader("load finns.ej\nlist\nquit\n"))
-            using (var output = new StringWriter())
-            {
-                Run(input, output, defaultFile);
-                string result = output.ToString();
-                if (result.Contains("Welcome") && result.Contains("Kunde inte hitta filen"))
+                // Test 2
+                using (var input = new StringReader("load\nlist\nquit\n"))
+                using (var output = new StringWriter())
                 {
-                    Console.WriteLine("Test 4: GODKÄND");
+                    Run(input, output, defaultFile);
+                    string result = output.ToString();
+                    Console.WriteLine($"Resultat för test 2: {result}");
+
+                    if (result.Contains("Welcome") && result.Contains("-"))
+                    {
+                        Console.WriteLine("Test 2: GODKÄND");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Test 2: MISSLYCKAD");
+                    }
                 }
-                else
+
+                // Test 3
+                using (var input = new StringReader("load computing.lis\nlist\nquit\n"))
+                using (var output = new StringWriter())
                 {
-                    Console.WriteLine("Test 4: MISSLYCKAD");
+                    Run(input, output, defaultFile);
+                    string result = output.ToString();
+                    Console.WriteLine($"Resultat för test 3: {result}");
+
+                    if (result.Contains("Welcome") && result.Contains("-"))
+                    {
+                        Console.WriteLine("Test 3: GODKÄND");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Test 3: MISSLYCKAD");
+                    }
+                }
+
+                // Test 4
+                using (var input = new StringReader("load finns.ej\nlist\nquit\n"))
+                using (var output = new StringWriter())
+                {
+                    Run(input, output, defaultFile);
+                    string result = output.ToString();
+                    Console.WriteLine($"Resultat för test 4: {result}");
+
+                    if (result.Contains("Welcome") && result.Contains("Kunde inte hitta filen"))
+                    {
+                        Console.WriteLine("Test 4: GODKÄND");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Test 4: MISSLYCKAD");
+                    }
+                }
+
+                // Test 5
+                using (var input = new StringReader("new\nlist\nquit\n"))
+                using (var output = new StringWriter())
+                {
+                    Run(input, output, defaultFile);
+                    string result = output.ToString();
+                    Console.WriteLine($"Resultat för test 5: {result}");
+
+                    if (result.Contains("Welcome") && !result.Contains("-"))
+                    {
+                        Console.WriteLine("Test 5: GODKÄND");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Test 5: MISSLYCKAD");
+                    }
+                }
+
+                // Test 6
+                using (var input = new StringReader("load\nlist\nnew\nlist\nquit\n"))
+                using (var output = new StringWriter())
+                {
+                    Run(input, output, defaultFile);
+                    string result = output.ToString();
+                    Console.WriteLine($"Resultat för test 6: {result}");
+
+                    if (result.Contains("Welcome") && result.Contains("-"))
+                    {
+                        Console.WriteLine("Test 6: GODKÄND");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Test 6: MISSLYCKAD");
+                    }
+                }
+
+                /// Test 7
+                using (var input = new StringReader("load\nlist\nnew sol sun\nlist\nquit\n"))
+                using (var output = new StringWriter())
+                {
+                    Run(input, output, defaultFile);
+                    string result = output.ToString();
+                    Console.WriteLine($"Resultat för test 7: {result}");
+
+                    if (result.Contains("Welcome") && result.Contains("sol") && result.Contains("sun"))
+                    {
+
+                        Console.WriteLine("Test 7: GODKÄND");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Test 7: MISSLYCKAD");
+                    }
+                }
+
+                // Test 8
+                using (var input = new StringReader("load\nlist\nnew sol\nlist\nquit\n"))
+                using (var output = new StringWriter())
+                {
+                    Run(input, output, defaultFile);
+                    string result = output.ToString();
+                    Console.WriteLine($"Resultat för test 8: {result}");
+
+                    if (result.Contains("Welcome") && !result.Contains("sol"))
+                    {
+                        Console.WriteLine("Test 8: GODKÄND");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Test 8: MISSLYCKAD");
+                    }
                 }
             }
         }
