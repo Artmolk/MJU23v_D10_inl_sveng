@@ -29,7 +29,7 @@ namespace MJU23v_D10_inl_sveng
             }
         }
 
-        static string defaultFile = "default.txt";
+        const string DefaultFile = "default.txt"; // Ändrat till konstant
         static void LoadDictionary(string fileName)
         {
             try
@@ -162,11 +162,11 @@ namespace MJU23v_D10_inl_sveng
 
         static void Main(string[] args)
         {
-            string defaultFile = "computing.lis";
+            const string DefaultFile = "computing.lis"; // Ändrat till konstant
             dictionary = new List<SweEngGloss>(); // dictionary here
-            RunTests(defaultFile);
+            RunTests(DefaultFile); // Använder konstant
 
-            while (!Run(Console.In, Console.Out, defaultFile))
+            while (!Run(Console.In, Console.Out, DefaultFile)) // Använder konstant här
             {
             }
         }
